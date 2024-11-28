@@ -2,22 +2,10 @@ import java.util.*;
 import java.io.*;
 
 public class LegacyApp {
-    // Code Smell: Variable no utilizada
-    private static String unusedVariable = "This is not used anywhere!";
-    
-    // Code Smell: Número mágico
-    private static final int MAX_RETRIES = 3;
-    
-    // Code Smell: Código muerto
-    private static String deadCode = "This code never gets executed";
-    
+
     public static void main(String[] args) {
-        // Code Smell: Código duplicado
         System.out.println("Welcome to the Legacy Application!");
-        System.out.println("Welcome to the Legacy Application!");
-        
-        // Code Smell: Demasiados comentarios innecesarios
-        // This section simulates an input from the user and processes it
+
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter command: ");
         String command = scanner.nextLine();
@@ -32,10 +20,10 @@ public class LegacyApp {
                 System.out.println("Unrecognized command.");
             }
         }
-        
+
         // Code Smell: Método demasiado largo
         performLongOperation();
-        
+
         // Code Smell: Método con múltiples responsabilidades
         manageResourcesAndCleanup();
 
@@ -51,15 +39,15 @@ public class LegacyApp {
     // Code Smell: Método demasiado largo
     private static void performLongOperation() {
         System.out.println("Starting long operation...");
-        
+
         for (int i = 0; i < 100; i++) {
             System.out.println("Processing step " + i);
         }
-        
+
         // Code Smell: Redundancia
         System.out.println("Processing step 1");
         System.out.println("Processing step 1");
-        
+
         System.out.println("Long operation completed.");
     }
 
@@ -68,7 +56,11 @@ public class LegacyApp {
         try {
             File file = new File("input.txt");
             if (!file.exists()) {
-                file.createNewFile();
+                if (file.createNewFile()) {
+                    System.out.println("File created successfully: " + file.getName());
+                } else {
+                    System.out.println("File already exists: " + file.getName());
+                }
             }
 
             String data = readFile(file);
@@ -83,11 +75,11 @@ public class LegacyApp {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         StringBuilder content = new StringBuilder();
         String line;
-        
+
         while ((line = reader.readLine()) != null) {
             content.append(line).append("\n");
         }
-        
+
         return content.toString();
     }
 
@@ -175,7 +167,7 @@ public class LegacyApp {
         String report = "Report data";
         System.out.println(report);
     }
-    
+
     // Clase de ejemplo con Abuso de Instanciación Directa
     static class ReportGenerator {
         void createReport() {
