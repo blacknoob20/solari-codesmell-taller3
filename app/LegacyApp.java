@@ -72,21 +72,22 @@ public class LegacyApp {
 
     // Code Smell: Jerarquía de herencia demasiado profunda
     private static String readFile(File file) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(file));
         StringBuilder content = new StringBuilder();
-        String line;
 
-        while ((line = reader.readLine()) != null) {
-            content.append(line).append("\n");
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
         }
 
         return content.toString();
     }
 
     private static void writeToFile(String data) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt"));
-        writer.write(data);
-        writer.close();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt"));) {
+            writer.write(data);
+        }
     }
 
     // Code Smell: Abuso de instanciación directa
@@ -144,13 +145,15 @@ public class LegacyApp {
     // Code Smell: Variables no inicializadas
     private static String uninitializedVariable;
 
-    // Code Smell: Excepciones no manejadas correctamente
     private static void riskyMethod() {
         try {
-            int result = 10 / 0; // División por cero
+            int divisor = 0;
+            if (divisor == 0) {
+                throw new ArithmeticException("Divisor cannot be zero");
+            }
+            int result = 10 / divisor;
         } catch (ArithmeticException e) {
-            // Error no tratado correctamente
-            System.out.println("Division error occurred, but no recovery.");
+            System.err.println("Error: " + e.getMessage());
         }
     }
 
