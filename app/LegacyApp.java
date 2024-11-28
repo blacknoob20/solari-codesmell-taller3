@@ -1,10 +1,14 @@
 import java.util.*;
 import java.io.*;
+import java.util.logging.Logger;
 
 public class LegacyApp {
+    private static final Logger logger = Logger.getLogger(LegacyApp.class.getName());
 
     public static void main(String[] args) {
-        System.out.println("Welcome to the Legacy Application!");
+        String state = "invalid";
+
+        printToConsole("Welcome to the Legacy Application!");
 
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter command: ");
@@ -17,38 +21,49 @@ public class LegacyApp {
         } else {
             // Code Smell: Condiciones ineficaces
             if (command.length() > 0) {
-                System.out.println("Unrecognized command.");
+                printToConsole("Unrecognized command.");
             }
         }
 
-        // Code Smell: Método demasiado largo
+        fragileMethod(state);
+        unusedMethod();
+        complexMethod();
+        spaghettiCode();
+        riskyMethod(0);
+        handleInput();
+        methodWithTooManyParams(new String[] {"param1", "param2", "param3"});
         performLongOperation();
 
         // Code Smell: Método con múltiples responsabilidades
-        manageResourcesAndCleanup();
+        ResourceManager manager = new ResourceManager();
+        manageResourcesAndCleanup(manager, manager);
 
         // Code Smell: Lógica redundante
         for (int i = 0; i < 5; i++) {
-            System.out.println("This is a redundant operation.");
+            printToConsole("This is a redundant operation.");
         }
 
         // Code Smell: Lógica especulativa
-        System.out.println("Preparing for future features...");
+        printToConsole("Preparing for future features...");
+    }
+
+    private static void printToConsole(String message) {
+        System.out.println(message);
     }
 
     // Code Smell: Método demasiado largo
     private static void performLongOperation() {
-        System.out.println("Starting long operation...");
+        printToConsole("Starting long operation...");
 
         for (int i = 0; i < 100; i++) {
-            System.out.println("Processing step " + i);
+            printToConsole("Processing step " + i);
         }
 
         // Code Smell: Redundancia
-        System.out.println("Processing step 1");
-        System.out.println("Processing step 1");
+        printToConsole("Processing step 1");
+        printToConsole("Processing step 1");
 
-        System.out.println("Long operation completed.");
+        printToConsole("Long operation completed.");
     }
 
     // Code Smell: Dependencia cíclica (entre clases)
@@ -57,16 +72,16 @@ public class LegacyApp {
             File file = new File("input.txt");
             if (!file.exists()) {
                 if (file.createNewFile()) {
-                    System.out.println("File created successfully: " + file.getName());
+                    printToConsole("File created successfully: " + file.getName());
                 } else {
-                    System.out.println("File already exists: " + file.getName());
+                    printToConsole("File already exists: " + file.getName());
                 }
             }
 
             String data = readFile(file);
             writeToFile(data);
         } catch (IOException e) {
-            System.out.println("Error during file operations.");
+            printToConsole("Error during file operations.");
         }
     }
 
@@ -98,117 +113,138 @@ public class LegacyApp {
 
     // Code Smell: Código no utilizado (métodos no utilizados)
     private static void unusedMethod() {
-        System.out.println("This method does nothing.");
+        printToConsole("This method does nothing.");
     }
 
-    // Code Smell: Variables innecesarias
-    private static int unusedResult = 0;
-
-    // Code Smell: Dependencias no necesarias (clase que hace todo)
-    private static void manageResourcesAndCleanup() {
-        ResourceManager manager = new ResourceManager();
-        manager.initialize();
-        manager.cleanup();
+    interface Initializer {
+        void initialize();
     }
 
-    // Code Smell: Código frágil (dependencia a estado global)
-    private static void fragileMethod() {
-        String state = globalState();
-        if (state.equals("invalid")) {
-            System.out.println("State is invalid.");
+    interface Cleaner {
+        void cleanup();
+    }
+
+    static class ResourceManager implements Initializer, Cleaner {
+        @Override
+        public void initialize() {
+            // Lógica de inicialización
+        }
+
+        @Override
+        public void cleanup() {
+            // Lógica de limpieza
         }
     }
 
-    // Code Smell: Método innecesariamente público
-    public static void unnecessaryPublicMethod() {
-        System.out.println("This method is public, but it is not needed.");
+    private static void manageResourcesAndCleanup(Initializer initializer, Cleaner cleaner) {
+        initializer.initialize();
+        cleaner.cleanup();
     }
 
-    // Code Smell: Spaghetti code (flujos de control complejos)
+    private static void printEvenNumber() {
+        printToConsole("Even number");
+    }
+
+    private static void printMultipleOfThree() {
+        printToConsole("Multiple of 3");
+    }
+
+    private static void printOtherNumber() {
+        printToConsole("Other number");
+    }
+
     private static void spaghettiCode() {
         for (int i = 0; i < 10; i++) {
             if (i % 2 == 0) {
-                System.out.println("Even number");
+                printEvenNumber();
             } else if (i % 3 == 0) {
-                System.out.println("Multiple of 3");
+                printMultipleOfThree();
             } else {
-                System.out.println("Other number");
+                printOtherNumber();
             }
         }
     }
 
-    // Code Smell: Métodos con demasiados parámetros
-    private static void methodWithTooManyParams(String param1, String param2, String param3, String param4, String param5) {
-        System.out.println(param1 + param2 + param3 + param4 + param5);
+    private static void methodWithTooManyParams(String[] params) {
+        StringBuilder result = new StringBuilder();
+        for (String param : params) {
+            result.append(param);
+        }
+        printToConsole(result.toString());
     }
 
-    // Code Smell: Variables no inicializadas
-    private static String uninitializedVariable;
-
-    private static void riskyMethod() {
+    private static void riskyMethod(int divisor) {
         try {
-            int divisor = 0;
             if (divisor == 0) {
                 throw new ArithmeticException("Divisor cannot be zero");
             }
             int result = 10 / divisor;
+
+            printToConsole("Result: " + result);
         } catch (ArithmeticException e) {
-            System.err.println("Error: " + e.getMessage());
+            logger.severe(e.getMessage());
         }
     }
 
-    // Code Smell: Método con lógica compleja (Doble responsabilidad)
-    private static void complexMethod() {
-        System.out.println("Complex logic begins");
-
+    private static void processNumbers() {
+        printToConsole("Complex logic begins");
         for (int i = 0; i < 10; i++) {
-            System.out.println("Processing number: " + i);
+            printToConsole("Processing number: " + i);
         }
+    }
 
-        System.out.println("Reporting results...");
-        // Report generation logic
+    private static void generateComplexReport() {
+        printToConsole("Reporting results...");
         String report = "Report data";
-        System.out.println(report);
+        printToConsole(report);
+    }
+
+    private static void complexMethod() {
+        processNumbers();
+        generateComplexReport();
     }
 
     // Clase de ejemplo con Abuso de Instanciación Directa
     static class ReportGenerator {
         void createReport() {
-            System.out.println("Report created.");
+            printToConsole("Report created.");
         }
     }
 
-    // Code Smell: Clase de recursos innecesaria
-    static class ResourceManager {
-        void initialize() {
-            System.out.println("Resources initialized.");
-        }
-
-        void cleanup() {
-            System.out.println("Resources cleaned up.");
+    private static void fragileMethod(String state) {
+        if (state.equals("invalid")) {
+            printToConsole("State is invalid.");
         }
     }
 
-    // Code Smell: Código frágil y dependencias globales
-    private static String globalState() {
-        return "invalid";
-    }
-
-    // Code Smell: Método de entrada largo y complejo
-    private static void complexInputProcessing() {
+    private static void handleInput() {
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
+        processInput(input);
+    }
 
+    private static void processInput(String input) {
         if (input.isEmpty()) {
-            System.out.println("Empty input");
+            printToConsole("Empty input");
         } else {
-            if (input.equals("1")) {
-                System.out.println("Option 1 selected");
-            } else if (input.equals("2")) {
-                System.out.println("Option 2 selected");
-            } else {
-                System.out.println("Unknown option");
+            switch (input) {
+                case "1":
+                    handleOption1();
+                    break;
+                case "2":
+                    handleOption2();
+                    break;
+                default:
+                    printToConsole("Unknown option");
             }
         }
+    }
+
+    private static void handleOption1() {
+        printToConsole("Option 1 selected");
+    }
+
+    private static void handleOption2() {
+        printToConsole("Option 2 selected");
     }
 }
