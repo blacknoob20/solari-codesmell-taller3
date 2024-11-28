@@ -15,9 +15,11 @@ public class LegacyApp {
         String command = scanner.nextLine();
 
         if (command.equals("process")) {
-            processCommand();
+            File file = new File("input.txt");
+            processCommand(file);
         } else if (command.equals("report")) {
-            generateReport();
+        ReportGenerator generator = new ReportGenerator();
+            generateReport(generator);
         } else {
             // Code Smell: Condiciones ineficaces
             if (command.length() > 0) {
@@ -31,20 +33,14 @@ public class LegacyApp {
         spaghettiCode();
         riskyMethod(0);
         handleInput();
-        methodWithTooManyParams(new String[] {"param1", "param2", "param3"});
+        methodWithTooManyParams(new String[] {"param1 ", "param2 ", "param3 "});
         performLongOperation();
 
         // Code Smell: Método con múltiples responsabilidades
         ResourceManager manager = new ResourceManager();
         manageResourcesAndCleanup(manager, manager);
 
-        // Code Smell: Lógica redundante
-        for (int i = 0; i < 5; i++) {
-            printToConsole("This is a redundant operation.");
-        }
-
-        // Code Smell: Lógica especulativa
-        printToConsole("Preparing for future features...");
+        printToConsole("This is a redundant operation.");
     }
 
     private static void printToConsole(String message) {
@@ -59,17 +55,12 @@ public class LegacyApp {
             printToConsole("Processing step " + i);
         }
 
-        // Code Smell: Redundancia
-        printToConsole("Processing step 1");
-        printToConsole("Processing step 1");
-
         printToConsole("Long operation completed.");
     }
 
     // Code Smell: Dependencia cíclica (entre clases)
-    private static void processCommand() {
+    private static void processCommand(File file) {
         try {
-            File file = new File("input.txt");
             if (!file.exists()) {
                 if (file.createNewFile()) {
                     printToConsole("File created successfully: " + file.getName());
@@ -106,8 +97,7 @@ public class LegacyApp {
     }
 
     // Code Smell: Abuso de instanciación directa
-    private static void generateReport() {
-        ReportGenerator generator = new ReportGenerator();
+    private static void generateReport(ReportGenerator generator) {
         generator.createReport();
     }
 
@@ -218,9 +208,7 @@ public class LegacyApp {
     }
 
     private static void handleInput() {
-        Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
-        processInput(input);
+        processInput("");
     }
 
     private static void processInput(String input) {
